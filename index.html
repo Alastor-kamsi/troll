@@ -1,0 +1,466 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#090407">
+  <title>Lag Machine</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: dark;
+      --red: #ff294d;
+      --line: rgba(255, 55, 85, .72);
+      --panel: rgba(12, 7, 12, .82);
+      --text-muted: #e2cbd2;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100%;
+      min-height: 100%;
+      margin: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      min-height: 100svh;
+      color: #fff;
+      font-family: Inter, Arial, sans-serif;
+      background: #080408;
+      overflow-x: hidden;
+    }
+
+    /* The page fills the viewport, with the original background image retained. */
+    .page {
+      width: 100%;
+      min-height: 100vh;
+      min-height: 100svh;
+      padding: clamp(12px, 2vw, 24px);
+      display: flex;
+      flex-direction: column;
+      gap: clamp(14px, 2vw, 22px);
+      border: 2px solid var(--red);
+      border-radius: 10px;
+      background-image:
+        linear-gradient(rgba(8, 3, 8, .48), rgba(8, 3, 8, .68)),
+        url("Crimson Static Glitch Background.png"),
+        radial-gradient(ellipse at top, #4b0920, #080408 72%);
+      background-position: center;
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-attachment: scroll;
+      box-shadow: inset 0 0 45px rgba(255, 20, 60, .12);
+    }
+
+    .page-header {
+      flex: 0 0 auto;
+      padding: clamp(14px, 2vw, 22px);
+      text-align: center;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: rgba(15, 4, 11, .72);
+      box-shadow: 0 0 18px rgba(255, 20, 60, .14);
+    }
+
+    h1 {
+      margin: 0;
+      color: #fff;
+      font: 800 clamp(2rem, 5vw, 3.6rem)/1.15 Orbitron, sans-serif;
+      letter-spacing: .07em;
+      text-shadow: 0 0 12px rgba(255, 36, 72, .9), 0 0 28px rgba(255, 36, 72, .35);
+    }
+
+    .content {
+      flex: 1;
+      min-height: 0;
+      display: grid;
+      /* Same left / middle / right arrangement as the original page. */
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
+      gap: clamp(12px, 1.8vw, 22px);
+      align-items: stretch;
+    }
+
+    .panel {
+      min-width: 0;
+      padding: clamp(10px, 1.5vw, 18px);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--panel);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, .28), inset 0 0 20px rgba(255, 30, 70, .05);
+      backdrop-filter: blur(5px);
+    }
+
+    .gallery {
+      display: flex;
+      flex-direction: column;
+      gap: clamp(10px, 1.5vw, 16px);
+    }
+
+    .gallery img {
+      display: block;
+      width: 100%;
+      min-height: 0;
+      flex: 1 1 0;
+      object-fit: cover;
+      border: 1px solid rgba(255, 75, 100, .75);
+      border-radius: 7px;
+      background: #1a0b12;
+      box-shadow: 0 3px 12px rgba(0, 0, 0, .3);
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+
+    .gallery img:hover {
+      transform: scale(1.015);
+      box-shadow: 0 0 18px rgba(255, 36, 72, .25);
+    }
+
+    .middle-panel {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: clamp(14px, 2vw, 22px);
+    }
+
+    .warning {
+      margin: 0;
+      padding: clamp(12px, 1.5vw, 18px);
+      color: #ffe6eb;
+      text-align: center;
+      line-height: 1.6;
+      font-size: clamp(.83rem, 1.2vw, .98rem);
+      border: 1px solid rgba(255, 190, 75, .55);
+      border-radius: 8px;
+      background: rgba(100, 49, 9, .24);
+    }
+
+    .warning strong {
+      color: #fff1c9;
+    }
+
+    .glitch-button {
+      width: 100%;
+      padding: 14px 12px;
+      border: 1px solid #ff7188;
+      border-radius: 8px;
+      color: #fff;
+      background: linear-gradient(135deg, #ed1742, #970b2d);
+      box-shadow: 0 5px 18px rgba(220, 10, 55, .25);
+      font: 700 clamp(.78rem, 1.1vw, .95rem) Orbitron, sans-serif;
+      cursor: pointer;
+      transition: transform .2s ease, filter .2s ease, box-shadow .2s ease;
+    }
+
+    .glitch-button:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.12);
+      box-shadow: 0 8px 22px rgba(220, 10, 55, .38);
+    }
+
+    .glitch-button:focus-visible {
+      outline: 3px solid #fff;
+      outline-offset: 3px;
+    }
+
+    .glitch-button:disabled {
+      cursor: wait;
+      opacity: .8;
+    }
+
+    .status {
+      min-height: 1.3em;
+      margin: -10px 0 -8px;
+      color: #ffb5c2;
+      text-align: center;
+      font-size: .85rem;
+    }
+
+    .video {
+      display: block;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border: 1px solid rgba(255, 75, 100, .75);
+      border-radius: 8px;
+      background: #000;
+    }
+
+    .glitch-active .page {
+      animation: page-glitch .18s steps(2, end) 6;
+    }
+
+    .glitch-active h1 {
+      animation: title-glitch .15s steps(2, end) 7;
+    }
+
+    @keyframes page-glitch {
+
+      0%,
+      100% {
+        transform: translateX(0);
+        filter: none;
+      }
+
+      25% {
+        transform: translateX(2px);
+        filter: hue-rotate(18deg);
+      }
+
+      50% {
+        transform: translateX(-2px);
+        filter: contrast(1.15);
+      }
+
+      75% {
+        transform: translateX(1px);
+        filter: saturate(1.4);
+      }
+    }
+
+    @keyframes title-glitch {
+
+      0%,
+      100% {
+        text-shadow: 0 0 12px var(--red);
+      }
+
+      50% {
+        text-shadow: 3px 0 #00eaff, -3px 0 #ff1744;
+      }
+    }
+
+    /* Keep the same three sections, stacking them in the original left-to-right order on phones. */
+    @media (max-width: 700px) {
+      .page {
+        padding: 10px;
+      }
+
+      .content {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .panel {
+        padding: 12px;
+      }
+
+      .gallery {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        align-items: stretch;
+      }
+
+      .gallery img {
+        aspect-ratio: 4 / 3;
+      }
+
+      .middle-panel {
+        order: 0;
+      }
+    }
+
+    @media (max-width: 420px) {
+      .gallery {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .gallery img:last-child:nth-child(odd) {
+        grid-column: 1 / -1;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+      }
+    }
+
+    .panel {
+      min-width: 0;
+      padding: clamp(10px, 1.5vw, 18px);
+      border: 1px solid rgba(255, 55, 85, 0.72);
+      border-radius: 10px;
+      background: rgba(12, 7, 12, 0.82);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28), inset 0 0 20px rgba(255, 30, 70, 0.05);
+      backdrop-filter: blur(5px);
+    }
+
+    .middle-panel {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: clamp(14px, 2vw, 22px);
+    }
+
+    .warning {
+      margin: 0;
+      padding: clamp(12px, 1.5vw, 18px);
+      color: #ffe6eb;
+      text-align: center;
+      line-height: 1.6;
+      font-size: clamp(0.83rem, 1.2vw, 0.98rem);
+      border: 1px solid rgba(255, 190, 75, 0.55);
+      border-radius: 8px;
+      background: rgba(100, 49, 9, 0.24);
+    }
+
+    .warning strong {
+      color: #fff1c9;
+    }
+
+    /* Collapsible Code Viewer Box */
+    .code-box-wrapper {
+      position: relative;
+      border: 1px solid rgba(255, 55, 85, 0.72);
+      border-radius: 8px;
+      background: rgba(5, 2, 5, 0.9);
+      overflow: hidden;
+    }
+
+    .code-box {
+      max-height: 180px;
+      overflow-y: auto;
+      padding: 12px;
+      transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .code-box.expanded {
+      max-height: 500px;
+    }
+
+    pre {
+      margin: 0;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.8rem;
+      color: #e2cbd2;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    /* Read More Button */
+    .read-more-btn {
+      width: 100%;
+      padding: 14px 12px;
+      border: 1px solid #ff7188;
+      border-radius: 8px;
+      color: #fff;
+      background: linear-gradient(135deg, #ed1742, #970b2d);
+      box-shadow: 0 5px 18px rgba(220, 10, 55, 0.25);
+      font: 700 clamp(0.78rem, 1.1vw, 0.95rem) Orbitron, sans-serif;
+      cursor: pointer;
+      transition: transform 0.2s ease, filter 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .read-more-btn:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.12);
+      box-shadow: 0 8px 22px rgba(220, 10, 55, 0.38);
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+    <header class="page-header">
+      <h1>Lag Machine</h1>
+    </header>
+
+    <section class="content" aria-label="Lag Machine content">
+      <!-- Left image column -->
+      <div class="panel gallery" aria-label="Left image gallery">
+        <img src="german kitten.png" alt="German kitten">
+        <img src="kapibara.jpg" alt="Capybara">
+        <img src="speed.png" alt="Speed graphic">
+      </div>
+
+      <!-- Original middle warning, button, and video column -->
+      <section class="panel middle-panel" aria-label="Lag Machine controls">
+        <p class="warning">
+          ⚠️ Clicking this button will crash or freeze your
+          browser tab and potentially slow down your computer.
+        </p>
+
+        <button class="glitch-button" id="glitchButton" type="button" onclick="nuke()">
+          Destroy Your PC For the Fun of It
+        </button>
+        <p class="status" id="status" aria-live="polite"></p>
+
+        <iframe class="video" src="https://www.youtube-nocookie.com/embed/I4ztQzQeKr0" title="Featured YouTube video"
+          loading="lazy" referrerpolicy="strict-origin-when-cross-origin"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowfullscreen>
+        </iframe>
+
+        <section class="panel middle-panel" aria-label="Controls and Content">
+          <p class="warning">
+            <strong>Notice:</strong> Below is the original code for the website.
+          </p>
+
+          <div class="code-box-wrapper">
+            <div class="code-box" id="codeContainer">
+              <pre><code id="sourceCodeDisplay">Loading source code...</code></pre>
+            </div>
+          </div>
+
+          <button class="read-more-btn" id="readMoreBtn" type="button" onclick="toggleCodeView()">
+            Read More
+          </button>
+        </section>
+
+      </section>
+
+      <div class="panel gallery" aria-label="Right image gallery">
+        <img src="greg.png" alt="Greg">
+        <img src="dog.png" alt="Dog">
+        <img src="cat pop.png" alt="Pop art cat">
+      </div>
+    </section>
+  </main>
+
+  <script>
+    function nuke() {
+      
+      var tsarbomba
+      for (let tsarbomba = 0; tsarbomba <= 1000000000000000000000000000000000; tsarbomba++) {
+        console.log(tsarbomba);
+      }
+
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const codeDisplay = document.getElementById("sourceCodeDisplay");
+      if (codeDisplay) {
+        codeDisplay.textContent = document.documentElement.outerHTML;
+      }
+    });
+
+    // Controls the expansion of the code box
+    function toggleCodeView() {
+      const codeContainer = document.getElementById("codeContainer");
+      const readMoreBtn = document.getElementById("readMoreBtn");
+
+      if (codeContainer.classList.contains("expanded")) {
+        codeContainer.classList.remove("expanded");
+        readMoreBtn.textContent = "Read More";
+      } else {
+        codeContainer.classList.add("expanded");
+        readMoreBtn.textContent = "Read Less";
+      }
+    }
+
+  </script>
+</body>
+
+</html>
